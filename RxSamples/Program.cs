@@ -1,3 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using RxSamples;
 
-Console.WriteLine("Hello, World!");
+Market market = new Market()
+{
+    Price = 70000
+};
+
+MarketListener marketListener = new MarketListener();
+
+marketListener.ListenToMarket(market);

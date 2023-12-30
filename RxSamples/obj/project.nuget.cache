@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "qWQ62TFf+NLMy5R+UJOFin16cSZvb7wg1QvRt5+O0KqbZLjyMFdLU0eDmGbwulvRJJ8cFq87pjCwLLC+aJoS7A==",
+  "dgSpecHash": "e63vT3+7qOC3rQsga6AiwRnWFaXa1JXlCbIeIUXwzEjRoNjAhYGf6lSKqf6rWmEdm/i7jJT/N2EFRFfCkLty3g==",
   "success": true,
   "projectFilePath": "/Users/selinsakarya/Projects/RxSamples/RxSamples/RxSamples.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/selinsakarya/.nuget/packages/system.reactive/6.0.0/system.reactive.6.0.0.nupkg.sha512"
+  ],
   "logs": []
 }
