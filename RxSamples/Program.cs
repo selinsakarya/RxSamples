@@ -1,10 +1,22 @@
-﻿using RxSamples;
+﻿using System.Reactive.Subjects;
+using RxSamples;
 
-Market market = new Market()
+Example1();
+
+void Example1()
 {
-    Price = 70000
-};
+    Market market = new Market()
+    {
+        Price = 70000
+    };
 
-MarketListener marketListener = new MarketListener();
+    MarketListener marketListener = new MarketListener();
 
-marketListener.ListenToMarket(market);
+    marketListener.ListenToMarket(market);
+    
+    market.UpdatePrice(100);
+}
+
+
+
+
