@@ -5,7 +5,9 @@ using RxSamples;
 
 // await Example2();
 
-Example3();
+// Example3();
+
+Example4();
 
 void Example1()
 {
@@ -66,4 +68,21 @@ void Example3()
 
     marketPrice.OnNext(500);
 
+}
+
+void Example4()
+{
+    Subject<decimal> marketPrice = new Subject<decimal>();
+
+    IDisposable subscription = marketPrice.Subscribe(
+        value => Console.WriteLine($"Value: {value}"),
+        error => Console.WriteLine($"Error: {error.Message}"),
+        () => Console.WriteLine("Completed")
+    );
+
+    marketPrice.OnNext(3000);
+
+    subscription.Dispose();
+
+    marketPrice.OnNext(1000);
 }
