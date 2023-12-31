@@ -3,7 +3,9 @@ using RxSamples;
 
 // Example1();
 
-await Example2();
+// await Example2();
+
+Example3();
 
 void Example1()
 {
@@ -38,9 +40,30 @@ async Task Example2()
         await Task.Delay(2000);
         marketPrice.OnNext(2312);
     });
-    
+
     marketPrice.OnCompleted();
-    // marketPrice.OnError(new Exception("Error"));
+    // marketPrice.OnError(new Exception("Error message"));
 
     marketPrice.OnNext(500);
+}
+
+void Example3()
+{
+    Subject<decimal> marketPrice = new Subject<decimal>();
+
+    marketPrice.OnNext(300);
+
+    marketPrice.Subscribe(
+        value => Console.WriteLine($"Value: {value}"),
+        error => Console.WriteLine($"Error: {error.Message}"),
+        () => Console.WriteLine("Completed")
+    );
+
+    marketPrice.OnNext(600);
+
+    marketPrice.OnCompleted();
+    // marketPrice.OnError(new Exception("Error message"));
+
+    marketPrice.OnNext(500);
+
 }
