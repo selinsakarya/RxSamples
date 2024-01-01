@@ -1,29 +1,33 @@
+using System.Collections.Immutable;
 using System.Reactive.Disposables;
 
 namespace RxSamples;
 
-public class Market : IObservable<Market>
+public class Market : IObservable<decimal>
 {
     public decimal Price { get; set; }
 
-    private readonly List<IObserver<Market>> _observers = new();
-
-    public IDisposable Subscribe(IObserver<Market> observer)
+    private ImmutableHashSet<IObserver<decimal>> _observers = ImmutableHashSet<IObserver<decimal>>.Empty;
+ 
+    public IDisposable Subscribe(IObserver<decimal> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
 
-        _observers.Add(observer);
+        _observers = _observers.Add(observer);
 
-        return Disposable.Empty;
+        return Disposable.Create(() =>
+        {
+            Console.WriteLine("Disposing");
+            _observers = _observers.Remove(observer);
+        });
     }
 
-    public void UpdatePrice(decimal price)
+    public void Publish(decimal price)
     {
-        Price = price;
-
-        foreach (IObserver<Market> observer in _observers)
+        foreach (var observer in _observers)
         {
-            observer.OnNext(this);
+            observer.OnNext(price);
         }
     }
 }
+

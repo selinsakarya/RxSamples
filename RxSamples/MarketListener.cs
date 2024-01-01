@@ -2,11 +2,11 @@ using System.Text.Json;
 
 namespace RxSamples;
 
-public class MarketListener : IObserver<Market>
+public class MarketListener : IObserver<decimal>
 {
-    public void ListenToMarket(Market market)
+    public IDisposable ListenToMarket(Market market)
     {
-        market.Subscribe(this);
+        return market.Subscribe(this);
     }
     
     public void OnCompleted()
@@ -19,8 +19,8 @@ public class MarketListener : IObserver<Market>
         Console.Write($"Error {error.Message}");
     }
 
-    public void OnNext(Market value)
+    public void OnNext(decimal value)
     {
-        Console.WriteLine($"Market Json: {JsonSerializer.Serialize(value)}");
+        Console.WriteLine($"Market price: {value}");
     }
 }

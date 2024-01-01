@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "e63vT3+7qOC3rQsga6AiwRnWFaXa1JXlCbIeIUXwzEjRoNjAhYGf6lSKqf6rWmEdm/i7jJT/N2EFRFfCkLty3g==",
+  "dgSpecHash": "O/WXEeyCrxQ/+8EFCs7bmTse5Bn+1NgxGTY9aHDJ6eBcCA4n4lWk9m2gJFfJoMcHZrYii5tfoeSMg+K1qlz5Og==",
   "success": true,
   "projectFilePath": "/Users/selinsakarya/Projects/RxSamples/RxSamples/RxSamples.csproj",
   "expectedPackageFiles": [
+    "/Users/selinsakarya/.nuget/packages/system.collections.immutable/8.0.0/system.collections.immutable.8.0.0.nupkg.sha512",
     "/Users/selinsakarya/.nuget/packages/system.reactive/6.0.0/system.reactive.6.0.0.nupkg.sha512"
   ],
   "logs": []

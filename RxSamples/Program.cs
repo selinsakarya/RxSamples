@@ -15,14 +15,16 @@ void Example1()
 {
     Market market = new Market()
     {
-        Price = 70000
+        Price = 700
     };
 
     MarketListener marketListener = new MarketListener();
 
-    marketListener.ListenToMarket(market);
+    IDisposable subscription = marketListener.ListenToMarket(market);
 
-    market.UpdatePrice(100);
+    market.Publish(100);
+    
+    subscription.Dispose();
 }
 
 async Task Example2()
