@@ -7,7 +7,9 @@ using RxSamples;
 
 // Example3();
 
-Example4();
+// Example4();
+
+BroadCasting();
 
 void Example1()
 {
@@ -67,7 +69,6 @@ void Example3()
     // marketPrice.OnError(new Exception("Error message"));
 
     marketPrice.OnNext(500);
-
 }
 
 void Example4()
@@ -85,4 +86,22 @@ void Example4()
     subscription.Dispose();
 
     marketPrice.OnNext(1000);
+}
+
+void BroadCasting()
+{
+    // Observable
+    Subject<decimal> marketPrice = new Subject<decimal>();
+
+    // Observer of marketPrice
+    // Observable
+    Subject<decimal> marketPriceConsumer = new Subject<decimal>();
+
+    marketPrice.Subscribe(marketPriceConsumer);
+
+    marketPriceConsumer.Inspect("Market consumer");
+
+    marketPrice.OnNext(100, 200, 150, 500);
+
+    marketPrice.OnCompleted();
 }
