@@ -7,8 +7,9 @@ using RxSamples;
 // Example4();
 // BroadCasting();
 // ReplaySubject();
-
-ReplaySubject2();
+// ReplaySubject2();
+// BehaviorSubject();
+// AsyncSubject();
 
 void Example1()
 {
@@ -136,4 +137,25 @@ void ReplaySubject2()
     Thread.Sleep(200);
 
     marketPrice.Subscribe(value => Console.WriteLine($"Value received: {value}"));
+}
+
+void BehaviorSubject()
+{
+    BehaviorSubject<decimal> marketPrice = new BehaviorSubject<decimal>(-1);
+
+    marketPrice.Inspect("Market Price consumer");
+    
+    marketPrice.OnNext(300);
+}
+
+void AsyncSubject()
+{
+    AsyncSubject<decimal> marketPrice = new AsyncSubject<decimal>();
+
+    marketPrice.Inspect("AsyncSubject");
+
+    marketPrice.OnNext(300);
+    marketPrice.OnNext(400);
+
+    marketPrice.OnCompleted();
 }
