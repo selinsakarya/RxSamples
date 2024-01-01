@@ -2,14 +2,13 @@
 using RxSamples;
 
 // Example1();
-
 // await Example2();
-
 // Example3();
-
 // Example4();
+// BroadCasting();
+// ReplaySubject();
 
-BroadCasting();
+ReplaySubject2();
 
 void Example1()
 {
@@ -104,4 +103,37 @@ void BroadCasting()
     marketPrice.OnNext(100, 200, 150, 500);
 
     marketPrice.OnCompleted();
+}
+
+void ReplaySubject()
+{
+    ReplaySubject<decimal> marketPrice = new ReplaySubject<decimal>();
+
+    marketPrice.OnNext(200);
+
+    marketPrice.Subscribe(value => Console.WriteLine($"Value received: {value}"));
+
+    marketPrice.OnNext(400);
+}
+
+void ReplaySubject2()
+{
+    TimeSpan timeWindow = TimeSpan.FromMilliseconds(500);
+
+    ReplaySubject<decimal> marketPrice = new ReplaySubject<decimal>(timeWindow);
+    // ReplaySubject<decimal> marketPrice = new ReplaySubject<decimal>(2);
+
+    marketPrice.OnNext(200);
+    Thread.Sleep(200);
+
+    marketPrice.OnNext(300);
+    Thread.Sleep(200);
+
+    marketPrice.OnNext(400);
+    Thread.Sleep(200);
+
+    marketPrice.OnNext(500);
+    Thread.Sleep(200);
+
+    marketPrice.Subscribe(value => Console.WriteLine($"Value received: {value}"));
 }
