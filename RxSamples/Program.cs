@@ -21,8 +21,8 @@ using Timer = System.Timers.Timer;
 // Generate();
 // Interval();
 // Timer();
-
 // LazyObservable();
+// FromEventPattern();
 
 void Example1()
 {
@@ -309,4 +309,20 @@ void LazyObservable()
     start.Inspect("start");
 
     Console.ReadLine();
+}
+
+void FromEventPattern()
+{
+    Market2 market = new Market2();
+
+    IObservable<EventPattern<decimal>> priceChanges = Observable.FromEventPattern<decimal>(
+        h => market.PriceChanged += h,
+        h => market.PriceChanged -= h
+    );
+
+    priceChanges.Subscribe(x => Console.WriteLine(x.EventArgs));
+
+    market.OnPriceChanged(10);
+    market.OnPriceChanged(20);
+    market.OnPriceChanged(30);
 }

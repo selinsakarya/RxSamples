@@ -8,7 +8,7 @@ public class Market : IObservable<decimal>
     public decimal Price { get; set; }
 
     private ImmutableHashSet<IObserver<decimal>> _observers = ImmutableHashSet<IObserver<decimal>>.Empty;
- 
+
     public IDisposable Subscribe(IObserver<decimal> observer)
     {
         ArgumentNullException.ThrowIfNull(observer);
@@ -31,3 +31,22 @@ public class Market : IObservable<decimal>
     }
 }
 
+public class Market2
+{
+    private decimal _price;
+
+    public decimal Price
+    {
+        get => _price;
+        set => _price = value;
+    }
+
+    public event EventHandler<decimal> PriceChanged;
+
+    public void OnPriceChanged(decimal price)
+    {
+        Price = price;
+
+        PriceChanged?.Invoke(this, price);
+    }
+}
