@@ -1,4 +1,5 @@
-﻿using System.Reactive.Linq;
+﻿using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using RxSamples;
 
@@ -13,6 +14,7 @@ using RxSamples;
 // AsyncSubject();
 // SimpleFactoryMethods();
 
+BlockingNonBlocking();
 
 void Example1()
 {
@@ -173,4 +175,44 @@ void SimpleFactoryMethods()
     IObservable<int> obs = Observable.Throw<int>(new Exception("oops"));
 
     obs.Inspect("obs");
+}
+
+void BlockingNonBlocking()
+{
+    IObservable<string> blockingObservable = Blocking();
+
+    IObservable<string> nonBlockingObservable = NonBlocking();
+
+    Console.WriteLine("Start");
+
+    nonBlockingObservable.Inspect("nonBlockingObservable");
+
+    blockingObservable.Inspect("blockingObservable");
+
+    IObservable<string> Blocking()
+    {
+        ReplaySubject<string> subject = new ReplaySubject<string>();
+
+        subject.OnNext("asd", "xyz");
+
+        subject.OnCompleted();
+    
+        Thread.Sleep(3000);
+
+        return subject;
+    }
+
+    IObservable<string> NonBlocking()
+    {
+        return Observable.Create<string>(observer =>
+        {
+            observer.OnNext("asd", "xyz");
+        
+            observer.OnCompleted();
+        
+            Thread.Sleep(3000);
+
+            return Disposable.Empty;
+        });
+    }
 }
