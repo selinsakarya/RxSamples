@@ -1,4 +1,5 @@
-﻿using System.Reactive.Subjects;
+﻿using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using RxSamples;
 
 // Example1();
@@ -10,6 +11,8 @@ using RxSamples;
 // ReplaySubject2();
 // BehaviorSubject();
 // AsyncSubject();
+// SimpleFactoryMethods();
+
 
 void Example1()
 {
@@ -160,4 +163,14 @@ void AsyncSubject()
     marketPrice.OnNext(400);
 
     marketPrice.OnCompleted();
+}
+
+void SimpleFactoryMethods()
+{
+    // IObservable<int> obs = Observable.Return(123);
+    // IObservable<int> obs = Observable.Empty<int>();
+    // IObservable<int> obs = Observable.Never<int>();
+    IObservable<int> obs = Observable.Throw<int>(new Exception("oops"));
+
+    obs.Inspect("obs");
 }
