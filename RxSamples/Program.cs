@@ -2,6 +2,7 @@
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Reactive.Threading.Tasks;
 using RxSamples;
 using Timer = System.Timers.Timer;
 
@@ -23,6 +24,8 @@ using Timer = System.Timers.Timer;
 // Timer();
 // LazyObservable();
 // FromEventPattern();
+// FromTask();
+// FromEnumerable();
 
 void Example1()
 {
@@ -292,7 +295,7 @@ void LazyObservable()
     IObservable<Unit> start = Observable.Start(() =>
     {
         Console.WriteLine("Starting work");
-   
+
         for (int i = 0; i < 10; i++)
         {
             Thread.Sleep(200);
@@ -325,4 +328,22 @@ void FromEventPattern()
     market.OnPriceChanged(10);
     market.OnPriceChanged(20);
     market.OnPriceChanged(30);
+}
+
+void FromTask()
+{
+    Task<string> t = Task.Factory.StartNew(() => "Test");
+
+    IObservable<string> obs = t.ToObservable();
+
+    obs.Inspect("obs");
+}
+
+void FromEnumerable()
+{
+    List<int> items = [10, 20, 30];
+
+    IObservable<int> obs = items.ToObservable();
+
+    obs.Inspect("obs");
 }
