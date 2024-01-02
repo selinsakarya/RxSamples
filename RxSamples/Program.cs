@@ -2,6 +2,7 @@
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using RxSamples;
+using Timer = System.Timers.Timer;
 
 // Example1();
 // await Example2();
@@ -13,8 +14,8 @@ using RxSamples;
 // BehaviorSubject();
 // AsyncSubject();
 // SimpleFactoryMethods();
-
-BlockingNonBlocking();
+// BlockingNonBlocking();
+// TickTock();
 
 void Example1()
 {
@@ -28,7 +29,7 @@ void Example1()
     IDisposable subscription = marketListener.ListenToMarket(market);
 
     market.Publish(100);
-    
+
     subscription.Dispose();
 }
 
@@ -151,7 +152,7 @@ void BehaviorSubject()
     BehaviorSubject<decimal> marketPrice = new BehaviorSubject<decimal>(-1);
 
     marketPrice.Inspect("Market Price consumer");
-    
+
     marketPrice.OnNext(300);
 }
 
@@ -196,7 +197,7 @@ void BlockingNonBlocking()
         subject.OnNext("asd", "xyz");
 
         subject.OnCompleted();
-    
+
         Thread.Sleep(3000);
 
         return subject;
@@ -207,12 +208,36 @@ void BlockingNonBlocking()
         return Observable.Create<string>(observer =>
         {
             observer.OnNext("asd", "xyz");
-        
+
             observer.OnCompleted();
-        
+
             Thread.Sleep(3000);
 
             return Disposable.Empty;
         });
     }
+}
+
+void TickTock()
+{
+    var obs = Observable.Create<string>(o =>
+    {
+        Timer timer = new Timer(1000);
+
+        timer.Elapsed += (sender, e) => o.OnNext($"tick {e.SignalTime}");
+    
+        timer.Elapsed += (sender, e) => Console.WriteLine($"tock {e.SignalTime}");
+    
+        timer.Start();
+
+        return () => timer.Dispose();
+    });
+
+    IDisposable sub = obs.Inspect("timer");
+
+    Console.ReadLine();
+
+    sub.Dispose();
+
+    Console.ReadLine();
 }
