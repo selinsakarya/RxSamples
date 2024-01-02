@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using RxSamples;
@@ -20,6 +21,7 @@ using Timer = System.Timers.Timer;
 // Generate();
 // Interval();
 // Timer();
+// LazyObservable();
 
 void Example1()
 {
@@ -280,6 +282,30 @@ void Timer()
     IObservable<long> timer = Observable.Timer(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
 
     timer.Inspect("timer");
+
+    Console.ReadLine();
+}
+
+void LazyObservable()
+{
+    IObservable<Unit> start = Observable.Start(() =>
+    {
+        Console.WriteLine("Starting work");
+   
+        for (int i = 0; i < 10; i++)
+        {
+            Thread.Sleep(200);
+            Console.Write(".");
+        }
+    });
+
+    for (int i = 0; i < 10; i++)
+    {
+        Thread.Sleep(200);
+        Console.Write("-");
+    }
+
+    start.Inspect("start");
 
     Console.ReadLine();
 }
