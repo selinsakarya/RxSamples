@@ -16,6 +16,10 @@ using Timer = System.Timers.Timer;
 // SimpleFactoryMethods();
 // BlockingNonBlocking();
 // TickTock();
+// Range();
+// Generate();
+// Interval();
+// Timer();
 
 void Example1()
 {
@@ -225,9 +229,9 @@ void TickTock()
         Timer timer = new Timer(1000);
 
         timer.Elapsed += (sender, e) => o.OnNext($"tick {e.SignalTime}");
-    
+
         timer.Elapsed += (sender, e) => Console.WriteLine($"tock {e.SignalTime}");
-    
+
         timer.Start();
 
         return () => timer.Dispose();
@@ -238,6 +242,44 @@ void TickTock()
     Console.ReadLine();
 
     sub.Dispose();
+
+    Console.ReadLine();
+}
+
+void Range()
+{
+    IObservable<int> tenToTwenty = Observable.Range(10, 11);
+
+    tenToTwenty.Inspect("tenToTwenty");
+}
+
+void Generate()
+{
+    IObservable<string> generated = Observable.Generate(1,
+        value => value < 100,
+        value => value * value + 1,
+        value => $"[val: {value}]");
+
+    generated.Inspect("generated");
+}
+
+void Interval()
+{
+    IObservable<long> interval = Observable.Interval(TimeSpan.FromMilliseconds(500));
+
+    using (interval.Inspect("interval"))
+    {
+        Console.ReadKey();
+    }
+}
+
+void Timer()
+{
+    // IObservable<long> timer = Observable.Timer(TimeSpan.FromSeconds(2));
+
+    IObservable<long> timer = Observable.Timer(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(2));
+
+    timer.Inspect("timer");
 
     Console.ReadLine();
 }
