@@ -31,6 +31,11 @@ using Timer = System.Timers.Timer;
 // DistinctUntilChanged();
 // While();
 // SkipUntil();
+// Any();
+// All();
+// DefaultIfEmpty();
+// ElementAt();
+// SequenceEqual();
 
 void Example1()
 {
@@ -396,4 +401,61 @@ void SkipUntil()
     stockPrices.OnNext(10, 20);
 
     optionPrices.OnNext(4, 5, 6);
+}
+
+void Any()
+{
+    Subject<int> subject = new Subject<int>();
+
+    subject.Any(x => x > 1).Inspect("any");
+
+    // subject.OnNext(2,3);
+
+    subject.OnCompleted();
+}
+
+void All()
+{
+    List<int> values = new List<int>() { 1, 2, 3, 4, 5 };
+
+    values.ToObservable()
+        .All(x => x > 0)
+        .Inspect("all");
+}
+
+void DefaultIfEmpty()
+{
+    var subject = new Subject<float>();
+
+    subject.DefaultIfEmpty(0.99f)
+        .Inspect("DefaultIfEmpty");
+
+    subject.OnCompleted();
+}
+
+void ElementAt()
+{
+    IObservable<int> numbers = Observable.Range(1, 10);
+
+    numbers.ElementAt(5).Inspect("ElementAt");
+
+    numbers.ElementAt(15).Inspect("ElementAt");
+}
+
+void SequenceEqual()
+{
+    Subject<int> seq1 = new Subject<int>();
+    Subject<int> seq2 = new Subject<int>();
+
+    seq1.Inspect("seq1");
+    seq1.Inspect("seq2");
+
+    seq1.SequenceEqual(seq2)
+        .Inspect("SequenceEqual");
+
+    seq1.OnNext(2);
+    seq2.OnNext(2);
+
+    seq1.OnCompleted();
+    seq2.OnCompleted();
 }
