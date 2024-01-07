@@ -45,12 +45,7 @@ using Timer = System.Timers.Timer;
 // MinMaxAvg();
 // FirstOrDefaultAsync();
 // Aggregate();
-
-Subject<int> subj = new Subject<int>();
-
-subj.Scan(0.0, (p, c) => p + c).Inspect("Scan");
-
-subj.OnNext(1, 2, 3, 4, 5);
+// Scan();
 
 void Example1()
 {
@@ -553,4 +548,13 @@ void Aggregate()
     subj.Aggregate(0.0, (p, c) => p + Math.Pow(c, power++)).Inspect("Aggregate");
 
     subj.OnNext(1, 2, 4).OnCompleted();
+}
+
+void Scan()
+{
+    Subject<int> subj = new Subject<int>();
+
+    subj.Scan(0.0, (p, c) => p + c).Inspect("Scan");
+
+    subj.OnNext(1, 2, 3, 4, 5);
 }
