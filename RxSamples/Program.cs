@@ -46,6 +46,34 @@ using Timer = System.Timers.Timer;
 // FirstOrDefaultAsync();
 // Aggregate();
 // Scan();
+// ErrorHandling();
+// OnErrorResumeNext();
+// SucceedAfter(3).Retry(4).Inspect("retry");
+// SucceedAfter(4).Retry(3).Inspect("retry");
+
+IObservable<int> SucceedAfter(int attempts)
+{
+    int count = 0;
+
+    return Observable.Create<int>(o =>
+    {
+        Console.WriteLine((count > 0 ? "Ret" : "T") + "rying to do the work");
+
+        if (count++ < attempts)
+        {
+            Console.WriteLine("Failed");
+            o.OnError(new Exception());
+        }
+        else
+        {
+            Console.WriteLine("succeeded");
+            o.OnNext(count);
+            o.OnCompleted();
+        }
+
+        return Disposable.Empty;
+    });
+}
 
 void Example1()
 {
@@ -557,4 +585,30 @@ void Scan()
     subj.Scan(0.0, (p, c) => p + c).Inspect("Scan");
 
     subj.OnNext(1, 2, 3, 4, 5);
+}
+
+void ErrorHandling()
+{
+    Subject<int> subj = new Subject<int>();
+    IObservable<int> fallback = Observable.Range(1, 3);
+
+    // subj.Catch(Observable.Range(1, 3)).Inspect("subj");
+    subj
+        .Catch<int, ArgumentException>(ex => Observable.Return(111))
+        .Catch(fallback).Inspect("subj");
+
+    subj.OnNext(32);
+    subj.OnError(new ArgumentException("arg"));
+    subj.OnError(new Exception("oops"));
+}
+
+void OnErrorResumeNext()
+{
+    Subject<char> seq1 = new Subject<char>();
+    Subject<char> seq2 = new Subject<char>();
+
+    seq1.OnErrorResumeNext(seq2).Inspect("OnErrorResumeNext");
+
+    seq1.OnNext('a', 'b', 'c').OnError(new Exception());
+    seq2.OnNext('d', 'e', 'f').OnCompleted();
 }
