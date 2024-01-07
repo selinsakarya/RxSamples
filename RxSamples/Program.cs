@@ -41,6 +41,16 @@ using Timer = System.Timers.Timer;
 // Time();
 // Materialize();
 // SelectMany();
+// Count();
+// MinMaxAvg();
+// FirstOrDefaultAsync();
+// Aggregate();
+
+Subject<int> subj = new Subject<int>();
+
+subj.Scan(0.0, (p, c) => p + c).Inspect("Scan");
+
+subj.OnNext(1, 2, 3, 4, 5);
 
 void Example1()
 {
@@ -499,4 +509,48 @@ void SelectMany()
     Observable.Range(1, 4, Scheduler.Immediate)
         .SelectMany(x => Observable.Range(1, x, Scheduler.Immediate))
         .Inspect("SelectMany");
+}
+
+void Count()
+{
+    IObservable<int> numbers = Observable.Range(1, 5);
+
+    numbers.Inspect("values");
+
+    numbers.Count().Inspect("count");
+}
+
+void MinMaxAvg()
+{
+    Subject<int> subj = new Subject<int>();
+
+    subj.Inspect("subj");
+    subj.Min().Inspect("Min");
+    subj.Max().Inspect("Max");
+    subj.Average().Inspect("Average");
+
+    subj.OnNext(1, 2, 7, 5);
+    subj.OnCompleted();
+}
+
+void FirstOrDefaultAsync()
+{
+    ReplaySubject<int> replay = new ReplaySubject<int>();
+
+    replay.OnNext(-1);
+    replay.OnNext(2);
+    replay.OnCompleted();
+
+    replay.FirstOrDefaultAsync(i => i > 0).Inspect("FirstOrDefaultAsync");
+}
+
+void Aggregate()
+{
+    Subject<double> subj = new Subject<double>();
+
+    int power = 1;
+
+    subj.Aggregate(0.0, (p, c) => p + Math.Pow(c, power++)).Inspect("Aggregate");
+
+    subj.OnNext(1, 2, 4).OnCompleted();
 }
