@@ -1,4 +1,5 @@
 ﻿using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -36,6 +37,10 @@ using Timer = System.Timers.Timer;
 // DefaultIfEmpty();
 // ElementAt();
 // SequenceEqual();
+// OfTypeAndCast();
+// Time();
+// Materialize();
+// SelectMany();
 
 void Example1()
 {
@@ -458,4 +463,40 @@ void SequenceEqual()
 
     seq1.OnCompleted();
     seq2.OnCompleted();
+}
+
+void OfTypeAndCast()
+{
+    Subject<object> subj = new Subject<object>();
+
+    subj.OfType<float>().Inspect("OfType");
+    subj.Cast<float>().Inspect("Cast");
+
+    subj.OnNext(1.2f, 2, 3.0);
+}
+
+void Time()
+{
+    IObservable<long> seq = Observable.Interval(TimeSpan.FromSeconds(1));
+
+    // seq.Timestamp().Inspect("Timestamp");
+    seq.TimeInterval().Inspect("TimeInterval");
+
+    Console.ReadLine();
+}
+
+void Materialize()
+{
+    IObservable<int> seq = Observable.Range(0, 4);
+
+    seq.Materialize().Inspect("Materialize");
+}
+
+void SelectMany()
+{
+    // 1 1 2 1 2 3 1 2 3 4
+
+    Observable.Range(1, 4, Scheduler.Immediate)
+        .SelectMany(x => Observable.Range(1, x, Scheduler.Immediate))
+        .Inspect("SelectMany");
 }
