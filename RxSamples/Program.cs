@@ -26,6 +26,11 @@ using Timer = System.Timers.Timer;
 // FromEventPattern();
 // FromTask();
 // FromEnumerable();
+// SequenceFilteringWhere();
+// SequenceFilteringSelect();
+// DistinctUntilChanged();
+// While();
+// SkipUntil();
 
 void Example1()
 {
@@ -341,9 +346,54 @@ void FromTask()
 
 void FromEnumerable()
 {
-    List<int> items = [10, 20, 30];
+    List<int> items = new List<int>() { 10, 20, 30 };
 
     IObservable<int> obs = items.ToObservable();
 
     obs.Inspect("obs");
+}
+
+void SequenceFilteringWhere()
+{
+    Observable.Range(0, 1000)
+        .Where(i => i % 9 == 0)
+        .Inspect("where");
+}
+
+void SequenceFilteringSelect()
+{
+    Observable.Range(-10, 21)
+        .Select(x => x * x)
+        .Distinct()
+        .Inspect("select distinct");
+}
+
+void DistinctUntilChanged()
+{
+    new List<int>() { 1, 1, 2, 3, 3, 4, 2 }
+        .ToObservable()
+        .DistinctUntilChanged()
+        .Inspect("DistinctUntilChanged");
+}
+
+void While()
+{
+    Observable.Range(-10, 21)
+        .SkipWhile(x => x < 0)
+        .TakeWhile(x => x < 6)
+        .Inspect("while");
+}
+
+void SkipUntil()
+{
+    Subject<decimal> stockPrices = new Subject<decimal>();
+    Subject<decimal> optionPrices = new Subject<decimal>();
+
+    optionPrices.SkipUntil(stockPrices).Inspect("optionPrices");
+
+    optionPrices.OnNext(1, 2, 3);
+
+    stockPrices.OnNext(10, 20);
+
+    optionPrices.OnNext(4, 5, 6);
 }
