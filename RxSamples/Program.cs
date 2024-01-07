@@ -50,6 +50,12 @@ using Timer = System.Timers.Timer;
 // OnErrorResumeNext();
 // SucceedAfter(3).Retry(4).Inspect("retry");
 // SucceedAfter(4).Retry(3).Inspect("retry");
+// CombineLatest();
+// Zip();
+// AndThenWhen();
+// StartWithConcatRepeat();
+// Amb();
+// Merge();
 
 IObservable<int> SucceedAfter(int attempts)
 {
@@ -611,4 +617,94 @@ void OnErrorResumeNext()
 
     seq1.OnNext('a', 'b', 'c').OnError(new Exception());
     seq2.OnNext('d', 'e', 'f').OnCompleted();
+}
+
+void CombineLatest()
+{
+    BehaviorSubject<bool> mechanical = new BehaviorSubject<bool>(true);
+    BehaviorSubject<bool> electrical = new BehaviorSubject<bool>(true);
+    BehaviorSubject<bool> electronic = new BehaviorSubject<bool>(true);
+
+    mechanical.Inspect("mechanical");
+    electrical.Inspect("electrical");
+    electronic.Inspect("electronic");
+
+    Observable.CombineLatest(mechanical, electrical, electronic)
+        .Select(values => values.All(x => x))
+        .Inspect("Is the system ok?");
+
+    electronic.OnNext(false);
+}
+
+void Zip()
+{
+    IObservable<int> digits = Observable.Range(10, 30);
+    IObservable<char> letters = Observable.Range(0, 10)
+        .Select(x => (char)('A' + x));
+
+    letters.Zip(digits, (letter, digit) => $"{letter}{digit}")
+        .Inspect("zip");
+}
+
+void AndThenWhen()
+{
+    IObservable<char> punctuation = "£#$½$½#§()".ToCharArray().ToObservable();
+    IObservable<int> digits = Observable.Range(10, 30);
+    IObservable<char> letters = Observable.Range(0, 10).Select(x => (char)('A' + x));
+
+    Observable.When(digits.And(letters).And(punctuation)
+        .Then((digit, letter, symbol) => $"{digit}{letter}{symbol}")).Inspect("and-then-when");
+}
+
+void StartWithConcatRepeat()
+{
+    IObservable<int> s1 = Observable.Range(1, 3);
+    IObservable<int> s2 = Observable.Range(4, 3);
+
+// s1.Concat(s2).Inspect("concat");
+// s1.Repeat(3).Inspect("repeat");
+    s1.StartWith(2, 1, 0).Inspect("startwith");
+}
+
+void Amb()
+{
+    Subject<int> seq1 = new Subject<int>();
+    Subject<int> seq2 = new Subject<int>();
+    Subject<int> seq3 = new Subject<int>();
+
+    seq1.Amb(seq2).Amb(seq3).Inspect("Amb");
+
+    seq2.OnNext(10);
+
+    seq1.OnNext(1);
+    seq1.OnNext(2);
+    seq1.OnNext(3);
+
+    seq2.OnNext(20);
+    seq2.OnNext(30);
+
+    seq3.OnNext(100);
+    seq3.OnNext(200);
+    seq3.OnNext(300);
+}
+
+void Merge()
+{
+    Subject<long> foo = new Subject<long>();
+    Subject<long> bar = new Subject<long>();
+    IObservable<long> baz = Observable.Interval(TimeSpan.FromSeconds(0.5)).Take(5);
+
+    foo.Merge(bar).Merge(baz).Inspect("merge");
+
+    foo.OnNext(100);
+
+    Thread.Sleep(1000);
+
+    bar.OnNext(10);
+
+    Thread.Sleep(1000);
+
+    foo.OnNext(1000);
+
+    Thread.Sleep(1000);
 }
